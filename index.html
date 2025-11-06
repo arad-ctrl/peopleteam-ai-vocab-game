@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Vocabulary Challenge</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Lucide React icons as inline SVG components
+        const Sparkles = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+        );
+
+        const Users = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+        );
+
+        const Award = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+            </svg>
+        );
+
+        const RefreshCw = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+        );
+
+        const teams = [
+            "HR/People Team",
+            "HR People Operations",
+            "People Technology",
+            "Payroll",
+            "Compensation",
+            "Total Rewards",
+            "Recruiting",
+            "HR Business Partners/People Partners",
+            "Internal Communication",
+            "Talent Development",
+            "Talent Assessment",
+            "Learning & Development",
+            "Onboarding",
+            "Employee Relations"
+        ];
+
+        const questions = [
+            {
+                term: "Large Language Model (LLM)",
+                question: "What is a Large Language Model (LLM)?",
+                options: [
+                    "A giant database that stores all possible questions and answers",
+                    "An AI system trained on vast amounts of text to understand and generate human-like language",
+                    "A programming language for creating AI applications",
+                    "A physical computer that processes language"
+                ],
+                correct: 1,
+                explanation: "An LLM is an AI system trained on massive amounts of text data. It learns patterns in language to understand context, answer questions, and generate human-like responses. Tools like Claude, ChatGPT, and Gemini are all LLMs.",
+                roleExamples: {
+                    "HR/People Team": "Your team might use LLMs to draft policy documents, generate FAQ responses for employees, or analyze employee feedback at scale.",
+                    "HR People Operations": "LLMs can help automate responses to common HR inquiries, draft process documentation, or summarize employee survey results.",
+                    "People Technology": "You might evaluate different LLMs to integrate into your HR tech stack or use them to generate technical documentation for new systems.",
+                    "Payroll": "LLMs can help explain complex payroll policies in simple terms, draft communications about pay changes, or answer employee questions about their paystubs.",
+                    "Compensation": "Use LLMs to draft job offer letters, explain compensation philosophy, or analyze market data descriptions from various sources.",
+                    "Total Rewards": "LLMs can help create personalized benefits communications, explain complex benefits packages, or generate content for your rewards portal.",
+                    "Recruiting": "LLMs power tools that help write job descriptions, screen resumes, or draft personalized candidate outreach messages.",
+                    "HR Business Partners/People Partners": "You can use LLMs to quickly draft manager communications, summarize employee situations, or prepare talking points for difficult conversations.",
+                    "Internal Communication": "LLMs can help draft company announcements, create multiple versions of messages for different audiences, or generate engaging content for your intranet.",
+                    "Talent Development": "Use LLMs to create learning content, personalize development plans, or generate coaching questions for different scenarios.",
+                    "Talent Assessment": "LLMs can help analyze assessment results at scale, generate reports on competency gaps, or draft development recommendations.",
+                    "Learning & Development": "LLMs can generate training materials, create quiz questions, personalize learning paths, or provide instant answers to learner questions.",
+                    "Onboarding": "Use LLMs to create personalized onboarding schedules, answer new hire questions 24/7, or generate role-specific welcome materials.",
+                    "Employee Relations": "LLMs can help draft investigation notes, suggest resolution approaches (while you make final decisions), or create documentation templates."
+                }
+            },
+            {
+                term: "Prompt",
+                question: "What is a 'prompt' in AI?",
+                options: [
+                    "The speed at which AI responds",
+                    "The question or instruction you give to an AI system",
+                    "A reminder notification from the AI",
+                    "The training process for AI models"
+                ],
+                correct: 1,
+                explanation: "A prompt is the text input you provide to an AI system - your question, instruction, or request. The quality of your prompt significantly affects the quality of the AI's response. Clear, specific prompts get better results.",
+                roleExamples: {
+                    "HR/People Team": "When asking AI to draft an employee handbook section, a good prompt would be: 'Write a 200-word remote work policy for a tech company that values flexibility but needs core collaboration hours.'",
+                    "HR People Operations": "Instead of 'Help with leave policy,' try: 'Create a step-by-step guide for managers explaining how to process parental leave requests, including timeline and required documentation.'",
+                    "People Technology": "A clear prompt: 'List the top 5 integration requirements we should ask vendors when evaluating HRIS systems, with explanation of why each matters.'",
+                    "Payroll": "Good prompt: 'Explain the difference between exempt and non-exempt employees in terms a new manager would understand, with examples of each role type.'",
+                    "Compensation": "Effective prompt: 'Draft an email explaining to an employee why their salary is below market rate, focusing on other total rewards components and development opportunities.'",
+                    "Total Rewards": "Strong prompt: 'Create a comparison chart of our three health insurance plans, highlighting key differences in deductibles, copays, and coverage for a family of four.'",
+                    "Recruiting": "Good prompt: 'Write a job description for a Senior Product Manager at a B2B SaaS company, emphasizing growth opportunities and including salary range of $150-180K.'",
+                    "HR Business Partners/People Partners": "Clear prompt: 'Help me prepare talking points for a conversation with a manager whose team member is underperforming. Include questions I should ask and coaching approach.'",
+                    "Internal Communication": "Effective prompt: 'Rewrite this benefits announcement for three audiences: executives (focus on cost), managers (focus on impact), and employees (focus on value).'",
+                    "Talent Development": "Strong prompt: 'Create a 90-day development plan for a new manager, including specific skills to build, resources to use, and milestones to track.'",
+                    "Talent Assessment": "Good prompt: 'Analyze these 360 feedback themes and suggest 3 developmental priorities for a senior leader showing weak strategic thinking scores.'",
+                    "Learning & Development": "Clear prompt: 'Design a 4-week microlearning series on giving feedback, with weekly topics, 5-minute lesson ideas, and practice scenarios.'",
+                    "Onboarding": "Effective prompt: 'Create a first-week checklist for a remote employee joining our engineering team, including virtual meet-and-greets and system access setup.'",
+                    "Employee Relations": "Strong prompt: 'Draft a template for documenting performance conversations that includes observed behaviors, impact, and agreed-upon next steps.'"
+                }
+            },
+            {
+                term: "Token",
+                question: "What is a 'token' in the context of AI language models?",
+                options: [
+                    "A reward point you earn for using AI",
+                    "A small piece of text (like a word or part of a word) that the AI processes",
+                    "A security code to access the AI",
+                    "A special character used in prompts"
+                ],
+                correct: 1,
+                explanation: "Tokens are the building blocks that AI models use to process text. A token is roughly a word or part of a word. For example, 'understanding' might be one token, while 'understand' could be another. Most AI services charge based on tokens used.",
+                roleExamples: {
+                    "HR/People Team": "If you're analyzing 1,000 employee survey responses with AI, you'll use more tokens (and potentially more cost) than analyzing 50 responses. Understanding tokens helps with budget planning.",
+                    "HR People Operations": "When automating FAQ responses, shorter queries use fewer tokens. This matters if you're building a chatbot that needs to stay within a monthly token budget.",
+                    "People Technology": "When evaluating AI vendors, compare their token pricing. One vendor might charge $0.002 per 1,000 tokens while another charges $0.01 - this adds up quickly at scale.",
+                    "Payroll": "Processing 500 payroll questions through an AI assistant might use 250,000 tokens. Knowing this helps you estimate costs for an AI-powered payroll helpdesk.",
+                    "Compensation": "A detailed compensation analysis report might use 5,000 tokens to generate. If you create 100 such reports monthly, that's 500,000 tokens - important for budgeting.",
+                    "Total Rewards": "Generating personalized benefits summaries for 10,000 employees will use millions of tokens. Understanding this helps you plan AI implementation costs.",
+                    "Recruiting": "Each AI-assisted resume screen might use 500-1,000 tokens. Screening 200 candidates could use 100,000-200,000 tokens. This impacts your recruitment tool budget.",
+                    "HR Business Partners/People Partners": "If you use AI to summarize employee situations, a typical case summary might use 300-500 tokens. Heavy users might process 50 cases monthly.",
+                    "Internal Communication": "Creating different versions of a single announcement for various audiences might use 2,000 tokens total. Doing this 20 times a month = 40,000 tokens.",
+                    "Talent Development": "Generating a personalized learning path uses about 1,000 tokens. Creating paths for 500 employees = 500,000 tokens, which affects your AI tool budget.",
+                    "Talent Assessment": "Each AI-generated assessment report might use 800 tokens. Processing 100 assessments = 80,000 tokens. Understanding this helps with tool selection.",
+                    "Learning & Development": "An AI-generated training module might use 3,000 tokens. Creating 30 modules = 90,000 tokens. This matters when choosing between AI platforms with different pricing.",
+                    "Onboarding": "A personalized onboarding guide uses about 1,500 tokens to generate. Creating guides for 50 new hires monthly = 75,000 tokens to budget for.",
+                    "Employee Relations": "AI assistance in drafting investigation summaries might use 600-800 tokens per case. Handling 30 cases monthly = 18,000-24,000 tokens in usage costs."
+                }
+            },
+            {
+                term: "Hallucination",
+                question: "What is a 'hallucination' in AI?",
+                options: [
+                    "When AI responds too quickly",
+                    "When AI generates false or nonsensical information presented as fact",
+                    "When AI uses too much data",
+                    "When AI gets confused by the user"
+                ],
+                correct: 1,
+                explanation: "A hallucination occurs when an AI confidently generates information that is incorrect, made-up, or nonsensical. It might cite sources that don't exist or make up facts. This is why it's crucial to verify important AI-generated information.",
+                roleExamples: {
+                    "HR/People Team": "AI might confidently state a labor law that doesn't exist. Always verify legal or compliance information with actual regulations or your legal team before acting on it.",
+                    "HR People Operations": "If you ask AI about your company's specific leave policy and it hasn't been given that information, it might make up a plausible-sounding but incorrect policy. Always fact-check against your actual documents.",
+                    "People Technology": "AI might claim a specific integration exists between two HR systems when it doesn't. Verify technical claims with vendor documentation before making purchasing decisions.",
+                    "Payroll": "AI could incorrectly state tax withholding rules or make up payroll regulations. Always verify tax and compliance information with official IRS or state resources.",
+                    "Compensation": "AI might cite salary data from a source that doesn't exist or provide market rates that seem accurate but are fabricated. Cross-check compensation data with real market surveys.",
+                    "Total Rewards": "AI could describe benefit plan features that sound right but don't match your actual plans. Always verify against your actual benefits documents and insurance contracts.",
+                    "Recruiting": "AI might claim a candidate has specific certifications or experience that aren't actually in their resume. This is why human verification of AI-screened candidates is essential.",
+                    "HR Business Partners/People Partners": "AI might reference a company policy or past precedent that doesn't exist. Always verify policy information before giving advice based on AI suggestions.",
+                    "Internal Communication": "AI might cite employee statistics or company milestones that sound right but are incorrect. Verify all data points before publishing company communications.",
+                    "Talent Development": "AI could recommend a training program or certification that doesn't actually exist. Verify that courses, programs, and credentials are real before suggesting them to employees.",
+                    "Talent Assessment": "AI might describe assessment methodologies or validation studies that don't exist. Verify any claims about assessment tools with the actual vendor and research studies.",
+                    "Learning & Development": "AI could cite learning theories or research studies that sound credible but are fabricated. Check academic sources before building curricula based on AI-provided research.",
+                    "Onboarding": "AI might describe a company tradition, tool, or process that doesn't exist at your organization. Review AI-generated onboarding content to ensure it reflects your actual practices.",
+                    "Employee Relations": "AI could reference employment laws or legal precedents that don't exist. Never rely solely on AI for legal information - always consult your legal team or official legal sources."
+                }
+            },
+            {
+                term: "Context Window",
+                question: "What is a 'context window' in AI?",
+                options: [
+                    "The time period the AI takes to respond",
+                    "The amount of information (text) the AI can consider at one time",
+                    "The pop-up window where AI appears",
+                    "The historical data the AI was trained on"
+                ],
+                correct: 1,
+                explanation: "The context window is the maximum amount of text an AI can process in a single interaction - including your prompt and its response. It's measured in tokens. If you exceed it, the AI might lose earlier parts of your conversation or documents.",
+                roleExamples: {
+                    "HR/People Team": "If you're asking AI to analyze a 100-page employee handbook, a model with a small context window might only process part of it. Choose AI tools with larger windows for document analysis.",
+                    "HR People Operations": "When processing long employee cases with extensive documentation, a larger context window ensures the AI can consider all relevant information at once rather than losing early details.",
+                    "People Technology": "When evaluating AI solutions, context window size matters. A 100K token window can process much longer documents than a 4K window, affecting which use cases are feasible.",
+                    "Payroll": "If you need AI to reference multiple payroll policy documents simultaneously, a larger context window ensures it can see all relevant policies at once for accurate answers.",
+                    "Compensation": "Analyzing a comprehensive compensation philosophy document plus multiple salary surveys requires a large context window to keep all information accessible during analysis.",
+                    "Total Rewards": "Comparing multiple benefits plan documents side-by-side requires sufficient context window. Small windows might force you to analyze plans separately, losing comparison insights.",
+                    "Recruiting": "When screening candidates, a larger context window lets you compare a resume against a detailed job description and competency framework all at once.",
+                    "HR Business Partners/People Partners": "Long employee case histories with multiple incidents need a large context window so the AI can consider the full pattern when helping you analyze situations.",
+                    "Internal Communication": "Creating consistent messaging across a long document or multiple related announcements requires a context window large enough to reference everything simultaneously.",
+                    "Talent Development": "Building comprehensive development plans that reference competency frameworks, assessment results, and learning resources needs adequate context window to integrate everything.",
+                    "Talent Assessment": "Analyzing lengthy 360 feedback reports or comparing assessments across multiple employees requires sufficient context window to process all the data at once.",
+                    "Learning & Development": "Creating an entire curriculum with multiple interconnected modules needs a large context window so the AI can ensure consistency and proper sequencing across all lessons.",
+                    "Onboarding": "Generating role-specific onboarding plans that reference company culture docs, team info, and technical requirements works best with a context window that fits everything.",
+                    "Employee Relations": "Complex ER cases with extensive documentation, policies, and correspondence history require large context windows to ensure the AI considers the full context when providing suggestions."
+                }
+            },
+            {
+                term: "Temperature",
+                question: "What does 'temperature' refer to in AI settings?",
+                options: [
+                    "How fast the AI server is running",
+                    "A setting that controls how creative vs. predictable the AI's responses are",
+                    "The processing power required",
+                    "The accuracy level of the AI"
+                ],
+                correct: 1,
+                explanation: "Temperature is a setting (usually 0-1) that controls randomness in AI responses. Low temperature (near 0) makes responses more focused and predictable. High temperature (near 1) makes responses more creative and varied. Different tasks need different temperatures.",
+                roleExamples: {
+                    "HR/People Team": "Use low temperature (0.2) for policy documentation where consistency and accuracy matter. Use higher temperature (0.7) when brainstorming new employee engagement initiatives.",
+                    "HR People Operations": "Set low temperature when drafting standard operating procedures to ensure consistent, factual content. Increase it when generating creative solutions to process challenges.",
+                    "People Technology": "Use low temperature for technical documentation and requirements gathering. Higher temperature can help when brainstorming innovative features for your HR tech stack.",
+                    "Payroll": "Always use low temperature for payroll communications and calculations where precision and consistency are critical. Creative variation is not desirable in payroll matters.",
+                    "Compensation": "Use low temperature for official compensation letters and policy statements. Slightly higher temperature can help when crafting compelling compensation philosophies or value propositions.",
+                    "Total Rewards": "Keep temperature low for benefits enrollment materials where accuracy is critical. Moderate temperature can help create engaging benefits communication content.",
+                    "Recruiting": "Use moderate temperature (0.5-0.6) for job descriptions to balance consistency with engaging, differentiated language. Low temperature for candidate scorecards where objectivity matters.",
+                    "HR Business Partners/People Partners": "Low temperature for documenting employee situations factually. Moderate temperature when brainstorming coaching approaches or exploring multiple perspectives on people challenges.",
+                    "Internal Communication": "Moderate temperature for engaging announcements that need personality. Low temperature for critical information like policy changes where clarity and consistency are paramount.",
+                    "Talent Development": "Use moderate-to-high temperature when generating diverse learning scenarios or creative development activities. Lower temperature for consistent competency definitions.",
+                    "Talent Assessment": "Always use low temperature for assessment scoring rubrics and feedback templates where consistency across candidates is essential. Avoid creative variation in evaluation criteria.",
+                    "Learning & Development": "Higher temperature can help generate varied practice scenarios and diverse examples. Lower temperature for learning objectives and assessment criteria that need to be consistent.",
+                    "Onboarding": "Use low temperature for consistent onboarding checklists and policy explanations. Moderate temperature for welcome messages that should feel personalized and warm.",
+                    "Employee Relations": "Use low temperature when documenting cases and creating investigation reports where factual consistency matters. Avoid creative interpretation in ER documentation."
+                }
+            },
+            {
+                term: "Fine-tuning",
+                question: "What is 'fine-tuning' in AI?",
+                options: [
+                    "Making small edits to AI-generated text",
+                    "Training an existing AI model on specific data to specialize it for particular tasks",
+                    "Adjusting the temperature setting",
+                    "Improving your prompts over time"
+                ],
+                correct: 1,
+                explanation: "Fine-tuning means taking a pre-trained AI model and training it further on your specific data to make it better at specialized tasks. For example, training an LLM on your company's HR policies to make it an expert in your specific procedures.",
+                roleExamples: {
+                    "HR/People Team": "You could fine-tune an AI model on your company's complete HR policy library to create an AI assistant that gives accurate, company-specific policy answers to employees.",
+                    "HR People Operations": "Fine-tune an AI on your historical process documentation and workflows to create an assistant that understands your specific operational procedures and can guide employees through them.",
+                    "People Technology": "Consider fine-tuning when building specialized AI tools for your organization. It's more complex and costly than standard AI use, but creates more accurate, company-specific tools.",
+                    "Payroll": "Fine-tuning on your payroll policies, procedures, and common questions could create a highly accurate payroll helpdesk AI that understands your specific pay schedules and policies.",
+                    "Compensation": "You could fine-tune an AI on your compensation philosophy, job architecture, and historical compensation decisions to help make consistent pay recommendations aligned with your framework.",
+                    "Total Rewards": "Fine-tune an AI on your complete benefits documentation, enrollment guides, and FAQs to create a benefits assistant that accurately answers questions about your specific plans.",
+                    "Recruiting": "Fine-tuning on successful candidate profiles, interview rubrics, and your hiring criteria could improve AI-assisted resume screening to match your specific quality bar.",
+                    "HR Business Partners/People Partners": "Fine-tune an AI on anonymized case histories and resolutions to create a tool that suggests approaches consistent with how your organization handles people issues.",
+                    "Internal Communication": "Fine-tuning on your company's past communications, brand voice, and messaging guidelines could create an AI that drafts announcements in your authentic company voice.",
+                    "Talent Development": "Fine-tune an AI on your competency models, development frameworks, and successful development plans to create personalized learning recommendations aligned with your approach.",
+                    "Talent Assessment": "Fine-tuning on your assessment methodology, competency definitions, and rating scales could help create more consistent, calibrated feedback aligned with your framework.",
+                    "Learning & Development": "Fine-tune an AI on your existing training content, learning philosophy, and instructional design standards to help create new content that matches your quality and style.",
+                    "Onboarding": "Fine-tuning on successful onboarding materials and employee feedback could create highly personalized, effective onboarding experiences that reflect your actual culture and practices.",
+                    "Employee Relations": "Fine-tuning on your ER case patterns, investigation templates, and resolution approaches (properly anonymized) could help suggest consistent, fair resolution approaches."
+                }
+            },
+            {
+                term: "RAG (Retrieval-Augmented Generation)",
+                question: "What is RAG (Retrieval-Augmented Generation)?",
+                options: [
+                    "A way to make AI responses faster",
+                    "A technique where AI retrieves relevant information from a knowledge base before generating a response",
+                    "A type of AI model",
+                    "A security feature for AI systems"
+                ],
+                correct: 1,
+                explanation: "RAG is a method where an AI first searches through a knowledge base (like your company documents) to find relevant information, then uses that information to generate an accurate, grounded response. This reduces hallucinations and keeps responses current.",
+                roleExamples: {
+                    "HR/People Team": "A RAG system could search your policy documents, find the relevant leave policy, and then answer an employee's question with accurate information directly from your handbook.",
+                    "HR People Operations": "Instead of the AI guessing about your processes, RAG retrieves your actual SOPs before answering questions, ensuring accuracy for process queries.",
+                    "People Technology": "RAG is the technology behind many 'AI knowledge base' tools. When evaluating HR chatbots, ask if they use RAG - it significantly improves answer accuracy for company-specific questions.",
+                    "Payroll": "A RAG-powered payroll assistant would retrieve your specific payroll calendar, tax tables, and policies before answering questions, rather than making assumptions.",
+                    "Compensation": "RAG enables AI to pull from your actual salary survey data, compensation philosophy docs, and pay ranges to give accurate, data-grounded compensation guidance.",
+                    "Total Rewards": "A benefits chatbot using RAG would retrieve the exact details from your SPDs and plan documents before answering, ensuring employees get accurate benefit information.",
+                    "Recruiting": "RAG can search through your interview guides, job descriptions, and hiring criteria to provide accurate, consistent information to hiring managers about your recruiting process.",
+                    "HR Business Partners/People Partners": "A RAG system could retrieve relevant sections from multiple policy documents before helping you answer a complex employee question, ensuring you reference the right policies.",
+                    "Internal Communication": "RAG could retrieve past announcements, brand guidelines, and key messages before drafting new communications, ensuring consistency with previous messaging.",
+                    "Talent Development": "RAG enables AI to search your learning library, competency frameworks, and development resources to provide personalized recommendations based on actual available content.",
+                    "Talent Assessment": "A RAG-based system could retrieve specific competency definitions and rating criteria from your assessment framework before helping generate feedback, ensuring alignment.",
+                    "Learning & Development": "RAG can search through existing training materials and learning resources before generating new content, ensuring consistency and avoiding duplication of existing materials.",
+                    "Onboarding": "RAG allows an onboarding assistant to retrieve current information about teams, tools, and processes from your knowledge base, keeping guidance accurate as things change.",
+                    "Employee Relations": "RAG can retrieve relevant policies, past similar cases, and resolution approaches before suggesting how to handle a case, grounding advice in your actual practices and precedents."
+                }
+            }
+        ];
+
+        function AIVocabGame() {
+            const [screen, setScreen] = useState('welcome');
+            const [selectedTeams, setSelectedTeams] = useState([]);
+            const [shuffledQuestions, setShuffledQuestions] = useState([]);
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showFeedback, setShowFeedback] = useState(false);
+            const [score, setScore] = useState(0);
+
+            useEffect(() => {
+                if (screen === 'quiz' && shuffledQuestions.length === 0) {
+                    const shuffled = [...questions].sort(() => Math.random() - 0.5);
+                    setShuffledQuestions(shuffled);
+                }
+            }, [screen, shuffledQuestions.length]);
+
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+
+            const handleTeamToggle = (team) => {
+                if (selectedTeams.includes(team)) {
+                    setSelectedTeams(selectedTeams.filter(t => t !== team));
+                } else if (selectedTeams.length < 3) {
+                    setSelectedTeams([...selectedTeams, team]);
+                }
+            };
+
+            const handleTeamSelect = () => {
+                if (selectedTeams.length > 0) {
+                    setScreen('quiz');
+                }
+            };
+
+            const handleAnswerSelect = (index) => {
+                if (!showFeedback) {
+                    setSelectedAnswer(index);
+                }
+            };
+
+            const handleSubmitAnswer = () => {
+                if (selectedAnswer !== null) {
+                    setShowFeedback(true);
+                    if (selectedAnswer === currentQuestion.correct) {
+                        setScore(score + 1);
+                    }
+                }
+            };
+
+            const handleNextQuestion = () => {
+                if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedAnswer(null);
+                    setShowFeedback(false);
+                } else {
+                    setScreen('results');
+                }
+            };
+
+            const handlePlayAgain = () => {
+                setScreen('welcome');
+                setSelectedTeams([]);
+                setShuffledQuestions([]);
+                setCurrentQuestionIndex(0);
+                setSelectedAnswer(null);
+                setShowFeedback(false);
+                setScore(0);
+            };
+
+            if (screen === 'welcome') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
+                        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8">
+                            <div className="text-center">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
+                                    <Sparkles className="w-8 h-8 text-purple-600" />
+                                </div>
+                                <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                                    AI Vocabulary Challenge
+                                </h1>
+                                <p className="text-lg text-gray-600 mb-8">
+                                    Test and expand your knowledge of AI terminology with role-specific examples tailored to your work in HR and People teams.
+                                </p>
+                                <button
+                                    onClick={() => setScreen('team-select')}
+                                    className="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                                >
+                                    Get Started
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (screen === 'team-select') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
+                        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8">
+                            <div className="text-center mb-8">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+                                    <Users className="w-8 h-8 text-blue-600" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                                    Select Your Team(s)
+                                </h2>
+                                <p className="text-gray-600 mb-2">
+                                    Choose up to 3 teams to see personalized examples
+                                </p>
+                                <p className="text-sm text-purple-600 font-medium">
+                                    {selectedTeams.length}/3 selected
+                                </p>
+                            </div>
+                            
+                            <div className="mb-6 max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-4">
+                                <div className="space-y-2">
+                                    {teams.map((team) => {
+                                        const isSelected = selectedTeams.includes(team);
+                                        const isDisabled = !isSelected && selectedTeams.length >= 3;
+                                        
+                                        return (
+                                            <button
+                                                key={team}
+                                                onClick={() => handleTeamToggle(team)}
+                                                disabled={isDisabled}
+                                                className={`w-full text-left p-3 rounded-lg border-2 transition-all ${
+                                                    isSelected
+                                                        ? 'border-purple-500 bg-purple-50'
+                                                        : isDisabled
+                                                        ? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
+                                                        : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                <div className="flex items-center">
+                                                    <div className={`w-5 h-5 rounded border-2 mr-3 flex items-center justify-center ${
+                                                        isSelected ? 'bg-purple-600 border-purple-600' : 'border-gray-300'
+                                                    }`}>
+                                                        {isSelected && (
+                                                            <svg className="w-3 h-3 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path d="M5 13l4 4L19 7"></path>
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    <span className="text-gray-900">{team}</span>
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleTeamSelect}
+                                disabled={selectedTeams.length === 0}
+                                className="w-full bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            >
+                                Start Quiz
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (screen === 'quiz' && currentQuestion) {
+                const isCorrect = selectedAnswer === currentQuestion.correct;
+                
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4 py-8">
+                        <div className="max-w-3xl mx-auto">
+                            <div className="mb-6">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-sm font-medium text-gray-600">
+                                        Question {currentQuestionIndex + 1} of {shuffledQuestions.length}
+                                    </span>
+                                    <span className="text-sm font-medium text-gray-600">
+                                        Score: {score}/{shuffledQuestions.length}
+                                    </span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                    <div
+                                        className="bg-purple-600 h-2 rounded-full transition-all duration-300"
+                                        style={{ width: `${((currentQuestionIndex + 1) / shuffledQuestions.length) * 100}%` }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
+                                <div className="mb-2">
+                                    <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                                        {currentQuestion.term}
+                                    </span>
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                                    {currentQuestion.question}
+                                </h2>
+
+                                <div className="space-y-3">
+                                    {currentQuestion.options.map((option, index) => {
+                                        let buttonClass = "w-full text-left p-4 rounded-lg border-2 transition-all ";
+                                        
+                                        if (!showFeedback) {
+                                            buttonClass += selectedAnswer === index
+                                                ? "border-purple-500 bg-purple-50"
+                                                : "border-gray-200 hover:border-purple-300 hover:bg-gray-50";
+                                        } else {
+                                            if (index === currentQuestion.correct) {
+                                                buttonClass += "border-green-500 bg-green-50";
+                                            } else if (selectedAnswer === index) {
+                                                buttonClass += "border-red-500 bg-red-50";
+                                            } else {
+                                                buttonClass += "border-gray-200 bg-gray-50 opacity-50";
+                                            }
+                                        }
+
+                                        return (
+                                            <button
+                                                key={index}
+                                                onClick={() => handleAnswerSelect(index)}
+                                                disabled={showFeedback}
+                                                className={buttonClass}
+                                            >
+                                                <div className="flex items-start">
+                                                    <span className="font-semibold mr-3 mt-0.5">
+                                                        {String.fromCharCode(65 + index)}.
+                                                    </span>
+                                                    <span>{option}</span>
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                {!showFeedback && (
+                                    <button
+                                        onClick={handleSubmitAnswer}
+                                        disabled={selectedAnswer === null}
+                                        className="w-full mt-6 bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                    >
+                                        Submit Answer
+                                    </button>
+                                )}
+                            </div>
+
+                            {showFeedback && (
+                                <div className={`rounded-2xl shadow-xl p-8 mb-6 ${isCorrect ? 'bg-green-50 border-2 border-green-200' : 'bg-red-50 border-2 border-red-200'}`}>
+                                    <div className="mb-4">
+                                        <h3 className={`text-2xl font-bold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                                            {isCorrect ? '✓ Correct!' : '✗ Not quite'}
+                                        </h3>
+                                    </div>
+
+                                    <div className="mb-6">
+                                        <h4 className="font-semibold text-gray-900 mb-2">Explanation:</h4>
+                                        <p className="text-gray-700">{currentQuestion.explanation}</p>
+                                    </div>
+
+                                    <div className="bg-white rounded-lg p-6 border-2 border-blue-200">
+                                        <h4 className="font-semibold text-blue-900 mb-3">
+                                            How this applies to your work:
+                                        </h4>
+                                        <div className="space-y-4">
+                                            {selectedTeams.map((team, index) => (
+                                                <div key={team} className={index > 0 ? 'pt-4 border-t border-blue-100' : ''}>
+                                                    <h5 className="font-medium text-blue-800 mb-1">{team}:</h5>
+                                                    <p className="text-gray-700">
+                                                        {currentQuestion.roleExamples[team]}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={handleNextQuestion}
+                                        className="w-full mt-6 bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                                    >
+                                        {currentQuestionIndex < shuffledQuestions.length - 1 ? 'Next Question' : 'See Results'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            }
+
+            if (screen === 'results') {
+                const percentage = Math.round((score / shuffledQuestions.length) * 100);
+                let message = '';
+                let emoji = '';
+                
+                if (percentage === 100) {
+                    message = "Perfect score! You're an AI terminology expert!";
+                    emoji = '🎉';
+                } else if (percentage >= 75) {
+                    message = "Great job! You have a solid understanding of AI terms.";
+                    emoji = '🌟';
+                } else if (percentage >= 50) {
+                    message = "Good effort! You're building your AI knowledge.";
+                    emoji = '👍';
+                } else {
+                    message = "Keep learning! Every expert was once a beginner.";
+                    emoji = '📚';
+                }
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
+                        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8">
+                            <div className="text-center">
+                                <div className="inline-flex items-center justify-center w-20 h-20 bg-purple-100 rounded-full mb-4">
+                                    <Award className="w-10 h-10 text-purple-600" />
+                                </div>
+                                <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                                    Quiz Complete! {emoji}
+                                </h2>
+                                <p className="text-xl text-gray-600 mb-8">{message}</p>
+
+                                <div className="bg-gradient-to-r from-purple-100 to-blue-100 rounded-xl p-8 mb-8">
+                                    <div className="text-6xl font-bold text-purple-600 mb-2">
+                                        {score}/{shuffledQuestions.length}
+                                    </div>
+                                    <div className="text-2xl font-semibold text-gray-700">
+                                        {percentage}% Correct
+                                    </div>
+                                </div>
+
+                                <div className="bg-blue-50 rounded-lg p-6 mb-8 text-left">
+                                    <h3 className="font-semibold text-gray-900 mb-2">
+                                        For {selectedTeams.join(', ')}:
+                                    </h3>
+                                    <p className="text-gray-700">
+                                        Understanding these AI terms will help you leverage tools like Claude, ChatGPT, and others more effectively in your daily work. Keep exploring and experimenting!
+                                    </p>
+                                </div>
+
+                                <button
+                                    onClick={handlePlayAgain}
+                                    className="inline-flex items-center gap-2 bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                                >
+                                    <RefreshCw className="w-5 h-5" />
+                                    Play Again
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return null;
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AIVocabGame />);
+    </script>
+</body>
+</html>
